@@ -1,3 +1,5 @@
+// src/components/HomePage.js
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MovieSearch from './MovieSearch';
@@ -5,11 +7,20 @@ import MovieGrid from './MovieGrid';
 import ColumnSelector from './ColumnSelector';
 import axios from 'axios';
 
+// Material UI imports
+import {
+  Box,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Stack
+} from '@mui/material';
+
 const HomePage = () => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [selectedColumn, setSelectedColumn] = useState(null);
-  // This key is used to force remount the MovieGrid when changed.
-  const [gridKey, setGridKey] = useState(0);
   const navigate = useNavigate();
 
   const handleAddAssignment = async () => {
@@ -19,31 +30,26 @@ const HomePage = () => {
     }
     try {
       const response = await axios.post('http://localhost:5000/assignments', {
-        movie_id: selectedMovie.value,
-        movie_title: selectedMovie.label,
+        movie_id: selectedMovie.value || selectedMovie.id,
+        movie_title: selectedMovie.label || selectedMovie.title,
         column_id: selectedColumn,
       });
       console.log("Assignment added:", response.data);
-      // Reset selections after adding (if desired)
+      // Reset selections
       setSelectedMovie(null);
       setSelectedColumn(null);
-      // Optionally force grid to reset when assignment is added:
-      setGridKey(prev => prev + 1);
     } catch (error) {
       console.error("Error adding assignment:", error);
     }
   };
 
-  // A Home button that resets the grid (and clears any selected movie)
-  const handleHomeClick = () => {
-    setSelectedMovie(null);
-    setGridKey(prev => prev + 1);
-    navigate('/'); // Navigate to Home if needed
-  };
-
   return (
-    <div>
-      <h1>Movie Ranker</h1>
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h4" gutterBottom>
+        Movie Ranker
+      </Typography>
+
+      {/* The search bar at the top */}
       <MovieSearch
         onMovieSelect={(movie) => {
           console.log("Movie selected:", movie);
@@ -52,45 +58,97 @@ const HomePage = () => {
       />
 
       {selectedMovie ? (
-        // Display selected movie view if a movie is selected
-        <div>
-          <h2>Selected Movie:</h2>
-          <div className="movie-item">
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Selected Movie
+          </Typography>
+
+          <Card
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              alignItems: 'center',
+              p: 2,
+              mb: 2
+            }}
+          >
             {selectedMovie.poster_path ? (
-              <img 
-                src={`https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`} 
-                alt={selectedMovie.label} 
-                style={{ maxWidth: '200px', borderRadius: '8px' }}
+              <CardMedia
+                component="img"
+                image={`https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`}
+                alt={selectedMovie.label || selectedMovie.title}
+                sx={{
+                  width: { xs: '100%', sm: 160 },
+                  height: { xs: 'auto', sm: 240 },
+                  borderRadius: 2
+                }}
               />
             ) : (
-              <div>No image available</div>
+              <Box
+                sx={{
+                  width: { xs: '100%', sm: 160 },
+                  height: { xs: 'auto', sm: 240 },
+                  borderRadius: 2,
+                  backgroundColor: '#eee',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Typography>No image available</Typography>
+              </Box>
             )}
-            <p>{selectedMovie.label}</p>
-          </div>
-          <ColumnSelector 
-            selectedColumn={selectedColumn} 
-            onSelectColumn={setSelectedColumn} 
-          />
-          <button onClick={handleAddAssignment}>
-            Add Movie to Column
-          </button>
-          <button onClick={handleHomeClick}>
-            Home
-          </button>
-        </div>
+
+            <CardContent
+              sx={{
+                flex: '1 1 0',
+                ml: { xs: 0, sm: 2 },
+                mt: { xs: 2, sm: 0 }
+              }}
+            >
+              <Typography variant="subtitle1">
+                {selectedMovie.label || selectedMovie.title}
+              </Typography>
+            </CardContent>
+          </Card>
+
+          {/* Column selector */}
+          <Box>
+            <ColumnSelector
+              selectedColumn={selectedColumn}
+              onSelectColumn={setSelectedColumn}
+            />
+          </Box>
+
+          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+            <Button variant="contained" onClick={handleAddAssignment}>
+              Add Movie to Column
+            </Button>
+            <Button variant="outlined" onClick={() => setSelectedMovie(null)}>
+              Cancel
+            </Button>
+          </Stack>
+        </Box>
       ) : (
-        // When no movie is selected, show the popular movie grid.
-        // Pass gridKey as the key prop to force remounting.
-        <MovieGrid key={gridKey} onMovieSelect={(movie) => {
-          console.log("Movie selected from grid:", movie);
-          setSelectedMovie(movie);
-        }} />
+        <Box sx={{ mt: 3 }}>
+          <MovieGrid
+            onMovieSelect={(movie) => {
+              console.log("Movie selected from grid:", movie);
+              setSelectedMovie(movie);
+            }}
+          />
+        </Box>
       )}
 
-      <button onClick={() => navigate('/columns')}>
-        Go to Columns View
-      </button>
-    </div>
+      <Box sx={{ mt: 3 }}>
+        <Button
+          variant="text"
+          onClick={() => navigate('/columns')}
+        >
+          Go to Columns View
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

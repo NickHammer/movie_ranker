@@ -48,7 +48,6 @@ app.post('/assignments', async (req, res) => {
   }
 });
 
-// (Optional) API endpoint to delete an assignment
 app.delete('/assignments/:id', async (req, res) => {
   const { id } = req.params;
   try {

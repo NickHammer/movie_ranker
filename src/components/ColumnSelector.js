@@ -1,4 +1,6 @@
+// src/components/ColumnSelector.js
 import React from 'react';
+import { Button, Box, Typography } from '@mui/material';
 
 const ColumnSelector = ({ selectedColumn, onSelectColumn }) => {
   const columns = [
@@ -9,24 +11,22 @@ const ColumnSelector = ({ selectedColumn, onSelectColumn }) => {
   ];
 
   return (
-    <div>
-      <h3>Select a Column</h3>
-      {columns.map((col) => (
-        <button
-          key={col.id}
-          onClick={() => onSelectColumn(col.id)}
-          style={{
-            backgroundColor: selectedColumn === col.id ? 'lightblue' : 'white',
-            margin: '0.5rem',
-            padding: '0.5rem 1rem',
-            border: '1px solid #ccc',
-            borderRadius: '4px'
-          }}
-        >
-          {col.label}
-        </button>
-      ))}
-    </div>
+    <Box>
+      <Typography variant="subtitle1" gutterBottom>
+        Select a Column
+      </Typography>
+      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+        {columns.map(col => (
+          <Button
+            key={col.id}
+            variant={selectedColumn === col.id ? "contained" : "outlined"}
+            onClick={() => onSelectColumn(col.id)}
+          >
+            {col.label}
+          </Button>
+        ))}
+      </Box>
+    </Box>
   );
 };
 

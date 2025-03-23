@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 import axios from 'axios';
 
-const MovieSearch = ({ onMovieSelect }) => {
+const MovieSearch = ({ onSearchQueryChange, onMovieSelect }) => {
   const [options, setOptions] = useState([]);
 
-  // Async function to fetch movies
   const fetchMovies = async (inputValue) => {
-    if (inputValue.length < 3) return;
+    if (!inputValue || inputValue.length < 3) {
+      setOptions([]); // Clear options if input is too short
+      return;
+    }
     try {
       const response = await axios.get(
         `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&query=${inputValue}`
@@ -16,26 +18,35 @@ const MovieSearch = ({ onMovieSelect }) => {
       const movies = response.data.results.map(movie => ({
         value: movie.id,
         label: movie.title,
+        poster_path: movie.poster_path, // include poster_path for display later
       }));
+      console.log("Fetched movies:", movies); // Debug: log fetched movies
       setOptions(movies);
     } catch (error) {
       console.error("Error fetching movies:", error);
     }
   };
 
-  // Synchronous handler for onInputChange
-  const handleInputChange = (inputValue) => {
-    fetchMovies(inputValue); // fire off async fetch but don't await it here
-    return inputValue;       // immediately return the input value so react-select works as expected
+  const handleInputChange = (inputValue, actionMeta) => {
+    console.log("Input changed:", inputValue, actionMeta); // Debug log
+    if (typeof onSearchQueryChange === 'function') {
+      onSearchQueryChange(inputValue);
+    }
+    fetchMovies(inputValue);
+    return inputValue;
   };
 
   return (
     <Select 
       options={options}
       onInputChange={handleInputChange}
-      onChange={(selected) => onMovieSelect(selected)}
+      onChange={(selected) => {
+        console.log("Movie selected:", selected); // Debug log
+        onMovieSelect(selected);
+      }}
       placeholder="Search for a movie..."
       isClearable
+      noOptionsMessage={() => "No movies found."}
     />
   );
 };

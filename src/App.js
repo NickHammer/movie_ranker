@@ -1,16 +1,22 @@
 // src/App.js
 import React from 'react';
-import MovieSearch from './components/MovieSearch';
-import MovieGrid from './components/MovieGrid';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import HomePage from './components/HomePage';
+import ColumnsView from './components/ColumnsView';
 
 function App() {
   return (
-    <div className="App" style={{ padding: '2rem' }}>
-      <h1>Movie Ranker</h1>
-      <MovieSearch onMovieSelect={() => { /* your logic here */ }} />
-      <MovieGrid />
-    </div>
+    <Router>
+      <div style={{ padding: '2rem' }}>
+        <nav>
+          <Link to="/">Home</Link> | <Link to="/columns">View Columns</Link>
+        </nav>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/columns" element={<ColumnsView />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

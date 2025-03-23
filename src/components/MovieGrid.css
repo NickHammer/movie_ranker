@@ -1,31 +1,59 @@
 .movie-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 1rem;
-    margin-top: 1rem;
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  /* Default: 6 columns */
+  grid-template-columns: repeat(6, 1fr);
+}
+
+/* For screens less than 1200px, go to 4 columns */
+@media (max-width: 1200px) {
+  .movie-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
-  
-  .movie-item img {
-    width: 100%;
-    border-radius: 8px;
-    display: block;
+}
+
+/* For screens less than 992px, go to 3 columns */
+@media (max-width: 992px) {
+  .movie-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
-  
-  .no-image {
-    background: #eee;
-    width: 100%;
-    height: 300px; /* adjust height as needed */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    color: #666;
+}
+
+/* For screens less than 768px, go to 2 columns */
+@media (max-width: 768px) {
+  .movie-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  .pagination {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-  }
+}
+
+.movie-item {
+  cursor: pointer;
+}
+
+.movie-item img {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+}
+
+.no-image {
+  background: #eee;
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Pagination styling */
+.pagination {
+  margin-top: 1rem;
+  text-align: center;
+}
+.pagination button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+}

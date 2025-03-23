@@ -1,0 +1,31 @@
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .movie-item img {
+    width: 100%;
+    border-radius: 8px;
+    display: block;
+  }
+  
+  .no-image {
+    background: #eee;
+    width: 100%;
+    height: 300px; /* adjust height as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .pagination {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
